@@ -7,7 +7,7 @@ require('dotenv').config();
 const Article = require('./models/article');
 const articleRouter = require('./routes/articles');
 
-mongoose.connect(process.env.MONGO_CONNECTION);
+mongoose.connect(process.env.MONGO_CONNECTION, { dbName: 'posts' });
 mongoose.connection.on('error', err => console.log(err));
 
 app.use(express.urlencoded({ extended: true }));

@@ -1,0 +1,34 @@
+services:
+  app:
+    image: node:18-alpine
+    # Install pnpm, dependencies and run dev script
+    command: sh -c "npm -g i pnpm && pnpm i && pnpm dev"
+    # Expose port 5000 to host
+    ports:
+      - 5000:5000
+    working_dir: /app
+    # Copy everything in current directory to /app
+    volumes:
+      - ./:/app
+    environment:
+      # Don't put localhost in connection string
+      # Replace localhost with the mongo service name
+      # Otherwise Docker will connect to port 27017 from the app service
+      # and will fail to connect
+      MONGO_CONNECTION: mongodb://root:password@mongodb:27017/
+
+  mongodb:
+    image: mongo:latest
+    # Map host volume path to container
+    volumes:
+      - blog-db:/data/db
+    # Env variables specified on the mongo docker hub page
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "password"
+    # Expose port to view collections with Compass
+    ports:
+      - 27017:27017
+
+volumes:
+  blog-db:
